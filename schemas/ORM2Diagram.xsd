@@ -1,0 +1,220 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+	targetNamespace="http://schemas.neumont.edu/ORM/2006-04/ORMDiagram"
+	elementFormDefault="qualified"
+	attributeFormDefault="unqualified"
+	xmlns:orm="http://schemas.neumont.edu/ORM/2006-04/ORMCore" 
+	xmlns="http://schemas.neumont.edu/ORM/2006-04/ORMDiagram"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:annotation>
+		<xs:appinfo source="zlib/libpng License Copyright Notice">
+			Copyright © Neumont University. All rights reserved.
+
+			This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
+			Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+			1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
+			2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+			3. This notice may not be removed or altered from any source distribution.
+		</xs:appinfo>
+	</xs:annotation>
+
+	<xs:import namespace="http://schemas.neumont.edu/ORM/2006-04/ORMCore"/>
+	<xs:element name="ORMDiagram" type="ORMDiagram"/>
+	<xs:complexType name="ORMDiagram">
+		<xs:sequence>
+			<xs:element name="Shapes" minOccurs="0">
+				<xs:complexType>
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="ObjectTypeShape" type="ObjectTypeShape"/>
+						<xs:element name="FactTypeShape" type="FactTypeShape"/>
+						<xs:element name="ExternalConstraintShape" type="ExternalConstraintShape"/>
+						<xs:element name="FrequencyConstraintShape" type="FrequencyConstraintShape"/>
+						<xs:element name="RingConstraintShape" type="RingConstraintShape"/>
+						<xs:element name="ModelNoteShape" type="ModelNoteShape"/>
+						<xs:element ref="DiagramExtensionShape"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element ref="Subject"/>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:ID" use="required"/>
+		<xs:attribute name="IsCompleteView" type="xs:boolean" use="required"/>
+		<xs:attribute name="Name" type="xs:string" use="required"/>
+		<xs:attribute name="BaseFontName" type="xs:string" use="required"/>
+		<xs:attribute name="BaseFontSize" type="xs:decimal" use="required"/>
+		<xs:attribute name="AutoPopulateShapes" type="xs:boolean" default="false">
+			<xs:annotation>
+				<xs:documentation>If this is set to true, then all shapes in the model will be loaded onto this diagram when the diagram is first loaded. AutoPopulateShapes is never written, but is useful for importing models with no diagram information.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ShapeType" abstract="true">
+		<xs:attribute name="id" type="xs:ID" use="required"/>
+		<xs:attribute name="IsExpanded" type="xs:boolean"/>
+		<xs:attribute name="AbsoluteBounds" type="xs:string"/>
+	</xs:complexType>
+	<xs:element name="DiagramExtensionShape" type="ShapeType" abstract="true"/>
+	<xs:element name="ObjectTypeRelativeExtensionShape" type="ShapeType" abstract="true"/>
+	<xs:element name="FactTypeRelativeExtensionShape" type="ShapeType" abstract="true"/>
+	<xs:complexType name="ObjectTypeShape">
+		<xs:complexContent>
+			<xs:extension base="ShapeType">
+				<xs:sequence>
+					<xs:element name="RelativeShapes" minOccurs="0">
+						<xs:complexType>
+							<xs:choice minOccurs="0" maxOccurs="unbounded">
+								<xs:element name="ValueConstraintShape" type="ValueConstraintShape"/>
+								<xs:element ref="ObjectTypeRelativeExtensionShape"/>
+							</xs:choice>
+						</xs:complexType>
+					</xs:element>
+					<xs:element ref="Subject"/>
+				</xs:sequence>
+				<xs:attribute name="ExpandRefMode" type="xs:boolean" default="false"/>
+				<xs:attribute name="DisplayRelatedTypes" type="DisplayRelatedTypesType" default="AttachAllTypes"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="FactTypeShape">
+		<xs:complexContent>
+			<xs:extension base="ShapeType">
+				<xs:sequence>
+					<xs:element name="RelativeShapes" minOccurs="0">
+						<xs:complexType>
+							<xs:choice minOccurs="0" maxOccurs="unbounded">
+								<xs:element name="ObjectifiedFactTypeNameShape" type="ObjectTypeShape"/>
+								<xs:element name="ReadingShape" type="ReadingShape"/>
+								<xs:element name="ValueConstraintShape" type="ValueConstraintShape"/>
+								<xs:element name="RoleNameShape" type="RoleNameShape"/>
+								<xs:element ref="FactTypeRelativeExtensionShape"/>
+							</xs:choice>
+						</xs:complexType>
+					</xs:element>
+					<xs:element ref="Subject"/>
+					<xs:element name="RoleDisplayOrder" minOccurs="0">
+						<xs:complexType>
+							<xs:choice minOccurs="0" maxOccurs="unbounded">
+								<xs:element name="Role">
+									<xs:complexType>
+										<xs:attribute name="ref" type="xs:IDREF"/>
+									</xs:complexType>
+								</xs:element>
+							</xs:choice>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="DisplayRoleNames" default="UserDefault">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="UserDefault"/>
+							<xs:enumeration value="Off"/>
+							<xs:enumeration value="On"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="ConstraintDisplayPosition" default="Top">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Top"/>
+							<xs:enumeration value="Bottom"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="DisplayOrientation" default="Horizontal">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Horizontal"/>
+							<xs:enumeration value="VerticalRotatedRight"/>
+							<xs:enumeration value="VerticalRotatedLeft"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="DisplayRelatedTypes" type="DisplayRelatedTypesType" default="AttachAllTypes"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="DisplayRelatedTypesType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="AttachAllTypes">
+				<xs:annotation>
+					<xs:documentation>The shape attaches to both its supertypes and its subtypes.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AttachSubtypes">
+				<xs:annotation>
+					<xs:documentation>The shape attaches to its subtypes, but not its supertypes.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AttachSupertypes">
+				<xs:annotation>
+					<xs:documentation>The shape attaches to its supertypes, but not its subtypes.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AttachNoTypes">
+				<xs:annotation>
+					<xs:documentation>The shape attaches to neither its subtypes nor its supertypes.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ReadingShape">
+		<xs:complexContent>
+			<xs:extension base="ShapeType">
+				<xs:sequence>
+					<xs:element ref="Subject"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ValueConstraintShape">
+		<xs:complexContent>
+			<xs:extension base="ShapeType">
+				<xs:sequence>
+					<xs:element ref="Subject"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RoleNameShape">
+		<xs:complexContent>
+			<xs:extension base="ShapeType">
+				<xs:sequence>
+					<xs:element ref="Subject"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ExternalConstraintShape">
+		<xs:complexContent>
+			<xs:extension base="ShapeType">
+				<xs:sequence>
+					<xs:element ref="Subject"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="FrequencyConstraintShape">
+		<xs:complexContent>
+			<xs:extension base="ExternalConstraintShape"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RingConstraintShape">
+		<xs:complexContent>
+			<xs:extension base="ExternalConstraintShape"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ModelNoteShape">
+		<xs:complexContent>
+			<xs:extension base="ShapeType">
+				<xs:sequence>
+					<xs:element ref="Subject"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Subject" type="SubjectRef"/>
+	<xs:complexType name="SubjectRef">
+		<xs:attribute name="ref" type="xs:IDREF"/>
+	</xs:complexType>
+	<xs:element name="ORMDiagramDynamicColor" substitutionGroup="orm:DynamicColor"/>
+</xs:schema>
