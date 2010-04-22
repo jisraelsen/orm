@@ -1,8 +1,5 @@
 module ORM
-  class ImpliedFactType
-    attr_reader   :id
-    attr_accessor :name
-
+  class ImpliedFactType < FactType
     # TODO: implement the following
     # <xs:element name="Definitions" type="DefinitionsType" minOccurs="0"/>
     # <xs:element name="Notes" type="NotesType" minOccurs="0"/>
@@ -12,10 +9,5 @@ module ORM
     # <xs:element name="DerivationRule" type="FactTypeDerivationRuleType" minOccurs="0"/>
     # <xs:element name="ImpliedByObjectification" type="ObjectificationRef"/>
     # <xs:element name="Extensions" type="ExtensionsType" minOccurs="0"/>
-		
-    def initialize(options={})
-      @id               = options[:id]
-      self.name         = options[:name]
-    end
   end
 end

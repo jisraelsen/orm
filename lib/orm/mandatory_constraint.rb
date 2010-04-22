@@ -1,7 +1,6 @@
 module ORM
   class MandatoryConstraint < Constraint
-    attr_reader   :id
-    attr_accessor :name, :is_simple, :is_implied
+    attr_accessor :is_simple, :is_implied
     
     # TODO: implement the following:
     # <xs:element name="ExclusiveOrExclusionConstraint" type="ExclusionConstraintRef" minOccurs="0"/>

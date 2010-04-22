@@ -11,7 +11,6 @@ module ORM
     
     def initialize(options={})
       super
-      
       self.is_independent = options[:is_independent] == "true" ? true : false
       self.is_personal    = options[:is_personal] == "true" ? true : false
     end

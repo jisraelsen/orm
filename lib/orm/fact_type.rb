@@ -1,6 +1,6 @@
 module ORM
   class FactType
-    attr_reader   :id
+    attr_reader   :uuid
     attr_accessor :name
 
     # TODO: implement the following
@@ -14,8 +14,8 @@ module ORM
     # <xs:element name="Extensions" type="ExtensionsType" minOccurs="0"/>
 		
     def initialize(options={})
-      @id               = options[:id]
-      self.name         = options[:name]
+      @uuid     = options[:uuid] || UUID.generate
+      self.name = options[:name]
     end
   end
 end

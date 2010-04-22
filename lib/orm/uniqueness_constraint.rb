@@ -1,7 +1,6 @@
 module ORM
   class UniquenessConstraint < Constraint
-    attr_reader   :id
-    attr_accessor :name, :is_internal
+    attr_accessor :is_internal
     
     # TODO: implement the following:
     # <xs:element name="PreferredIdentifierFor" type="ObjectTypeRef" minOccurs="0"/>

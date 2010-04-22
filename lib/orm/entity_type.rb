@@ -4,7 +4,6 @@ module ORM
     
     def initialize(options={})
       super
-      
       self.reference_mode = options[:reference_mode]
     end
   end
