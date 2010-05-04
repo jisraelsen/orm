@@ -1,5 +1,5 @@
 module ORM
-  class ModelNote
+  class ModelNote    
     attr_reader   :uuid
     attr_accessor :text
     

@@ -1,9 +1,9 @@
 module ORM
   class DataType
-    attr_reader :id
+    attr_reader :uuid
     
     def initialize(options={})
-      @id = options[:uuid] || UUID.generate
+      @uuid = options[:uuid] || UUID.generate
     end
   end
   
