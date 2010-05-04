@@ -107,8 +107,8 @@ module ORM
       end
     end
     
-    # model errors
-    def data_type_not_specified_errors
+    # model errors -- only DataTypeNotSpecifiedErrors for now
+    def model_errors
       doc.xpath('//orm:ModelErrors/orm:DataTypeNotSpecifiedError').map do |node|
         ORM::DataTypeNotSpecifiedError.new(
           :uuid => parse_uuid(node['id']),
@@ -140,7 +140,7 @@ module ORM
         :constraints => uniqueness_constraints+mandatory_constraints,
         :data_types => data_types,
         :model_notes => model_notes,
-        :model_errors => data_type_not_specified_errors,
+        :model_errors => model_errors,
         :reference_mode_kinds => reference_mode_kinds
       )
     end
