@@ -1,6 +1,6 @@
 module ORM
   class Parser
-    attr_reader :doc, :model, :diagrams
+    attr_reader :doc, :model
     
     def self.parse(file)
       new(file).parse
@@ -12,7 +12,6 @@ module ORM
     
     def parse
       @model = orm_model
-      # @diagrams = orm_diagrams
       self
     end
     
