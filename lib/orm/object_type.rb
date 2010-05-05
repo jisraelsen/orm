@@ -1,9 +1,10 @@
 module ORM
   class ObjectType
-    attr_reader   :uuid
+    attr_reader   :model, :uuid
     attr_accessor :name, :is_independent, :is_external, :is_personal, :played_role_refs
     
     def initialize(options={})
+      @model                = options[:model]
       @uuid                 = options[:uuid] || UUID.generate
       self.name             = options[:name]
       self.is_independent   = options[:is_independent].to_boolean
