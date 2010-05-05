@@ -9,5 +9,13 @@ module ORM
       self.is_implied                 = options[:is_implied].to_boolean
       self.implied_by_object_type_ref = options[:implied_by_object_type_ref]
     end
+    
+    def implied_by_object_type
+      model.object_types.detect{|o| o.uuid == implied_by_object_type_ref} if model
+    end
+    
+    def roles
+      model.fact_types.map(&:roles).flatten.select{|o| role_refs.include?(o.uuid) } if model
+    end
   end
 end

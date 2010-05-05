@@ -97,4 +97,31 @@ describe ORM::Model do
     end
   end
   
+  describe "#objectified_types" do
+    it "returns object_types of class ORM::ObjectifiedType" do
+      model = ORM::Model.new(
+        :object_types => [
+          ORM::EntityType.new,
+          ORM::ValueType.new,
+          ORM::ObjectifiedType.new,
+          ORM::ObjectifiedType.new
+        ]
+      )
+      model.objectified_types.each{|o| o.should be_kind_of(ORM::ObjectifiedType)}
+    end
+  end
+  
+  describe "#uniqueness_constraints" do
+    it "returns constraints of class ORM::UniquenessConstraint" do
+      model = ORM::Model.new(
+        :constraints => [
+          ORM::MandatoryConstraint.new,
+          ORM::UniquenessConstraint.new,
+          ORM::UniquenessConstraint.new
+        ]
+      )
+      model.uniqueness_constraints.each{|o| o.should be_kind_of(ORM::UniquenessConstraint)}
+    end
+  end
+  
 end

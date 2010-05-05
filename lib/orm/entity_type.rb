@@ -7,5 +7,9 @@ module ORM
       self.reference_mode           = options[:reference_mode]
       self.preferred_identifier_ref = options[:preferred_identifier_ref]
     end
+    
+    def preferred_identifier
+      model.uniqueness_constraints.detect{|o| o.uuid == preferred_identifier_ref } if model
+    end
   end
 end

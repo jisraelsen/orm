@@ -6,5 +6,9 @@ module ORM
       super
       self.implied_by_objectification_ref = options[:implied_by_objectification_ref]
     end
+    
+    def implied_by_objectification
+      model.objectified_types.map(&:nested_predicate).flatten.detect{|o| o.uuid == implied_by_objectification_ref } if model
+    end
   end
 end

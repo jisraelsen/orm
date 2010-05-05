@@ -19,7 +19,6 @@ module ORM
     def entity_types
       doc.xpath('//orm:Objects/orm:EntityType').map do |node|
         ORM::EntityType.new(
-          :model => @model,
           :uuid => parse_uuid(node['id']), 
           :name => node['Name'], 
           :reference_mode => node['_ReferenceMode'],
@@ -32,7 +31,6 @@ module ORM
     def value_types
       doc.xpath('//orm:Objects/orm:ValueType').map do |node|
         value_type = ORM::ValueType.new(
-          :model => @model,
           :uuid => parse_uuid(node['id']), 
           :name => node['Name'],
           :is_implicit_boolean_value => node['IsImplicitBooleanValue'],
@@ -50,7 +48,6 @@ module ORM
         
         if value_constraint_node = node.at_xpath('orm:ValueRestriction//orm:ValueConstraint')
           value_type.value_constraint = ORM::ValueConstraint.new(
-            :model => @model,
             :uuid => parse_uuid(value_constraint_node['id']),
             :name => value_constraint_node['Name'],
             :value_ranges => node.xpath('//orm:ValueRanges/orm:ValueRange').map {|n| 
@@ -72,7 +69,6 @@ module ORM
     def objectified_types
       doc.xpath('//orm:Objects/orm:ObjectifiedType').map do |node|
         objectified_type = ORM::ObjectifiedType.new(
-          :model => @model,
           :uuid => parse_uuid(node['id']), 
           :name => node['Name'],
           :is_independent => node['IsIndependent'],
@@ -97,7 +93,6 @@ module ORM
     def fact_types
       doc.xpath('//orm:Facts/orm:Fact').map do |node|
         ORM::FactType.new(
-          :model => @model,
           :uuid => parse_uuid(node['id']), 
           :name => node['_Name'],
           :roles => node.xpath('orm:FactRoles/orm:Role').map {|n| 
@@ -132,7 +127,6 @@ module ORM
     def implied_fact_types
       doc.xpath('//orm:Facts/orm:ImpliedFact').map do |node|
         ORM::ImpliedFactType.new(
-          :model => @model,
           :uuid => parse_uuid(node['id']), 
           :name => node['_Name'],
           :roles => node.xpath('orm:FactRoles/orm:Role').map {|n| 
@@ -169,15 +163,14 @@ module ORM
     def uniqueness_constraints
       doc.xpath('//orm:Constraints/orm:UniquenessConstraint').map do |node|
         uniqueness_constraint = ORM::UniquenessConstraint.new(
-          :model => @model,
           :uuid => parse_uuid(node['id']), 
           :name => node['Name'],
           :role_refs => node.xpath('orm:RoleSequence/orm:Role').map {|n| parse_uuid(n['ref'])},
           :is_internal => node['IsInternal']
         )
         
-        if preferred_identifier_for_node = node.at_xpath('orm:PreferredIdentifierFor')
-          uniqueness_constraint.preferred_identifier_for = parse_uuid(preferred_identifier_for_node['ref'])
+        if preferred_identifier_for_ref_node = node.at_xpath('orm:PreferredIdentifierFor')
+          uniqueness_constraint.preferred_identifier_for_ref = parse_uuid(preferred_identifier_for_ref_node['ref'])
         end
         
         uniqueness_constraint
@@ -187,7 +180,6 @@ module ORM
     def mandatory_constraints
       doc.xpath('//orm:Constraints/orm:MandatoryConstraint').map do |node|
         mandatory_constraint = ORM::MandatoryConstraint.new(
-          :model => @model,
           :uuid => parse_uuid(node['id']), 
           :name => node['Name'],
           :role_refs => node.xpath('orm:RoleSequence/orm:Role').map {|n| parse_uuid(n['ref'])},
@@ -217,7 +209,6 @@ module ORM
     def model_notes
       doc.xpath('//orm:ModelNotes/orm:ModelNote').map do |node|
         ORM::ModelNote.new(
-          :model => @model,
           :uuid => parse_uuid(node['id']),
           :text => node.at_xpath('orm:Text').content
         )
@@ -228,7 +219,6 @@ module ORM
     def model_errors
       doc.xpath('//orm:ModelErrors/*').map do |node|
         model_error = "ORM::#{node.name}".constantize.new(
-          :model => @model,
           :uuid => parse_uuid(node['id']),
           :name => node['Name']
         )
@@ -245,7 +235,6 @@ module ORM
     def reference_mode_kinds
       doc.xpath('//orm:ReferenceModeKind').map do |node|
         ORM::ReferenceModeKind.new(
-          :model => @model,
           :uuid => parse_uuid(node['id']), 
           :format_string => node['FormatString'],
           :reference_mode_type => node['ReferenceModeType']
@@ -256,18 +245,17 @@ module ORM
     # orm model
     def orm_model
       node = doc.at_xpath('//orm:ORMModel')
-      @model = ORM::Model.new(
+      ORM::Model.new(
         :uuid => parse_uuid(node['id']),
-        :name => node['Name']
+        :name => node['Name'],
+        :object_types => entity_types + value_types + objectified_types,
+        :fact_types => fact_types + implied_fact_types,
+        :constraints => uniqueness_constraints + mandatory_constraints,
+        :data_types => data_types,
+        :model_notes => model_notes,
+        :model_errors => model_errors,
+        :reference_mode_kinds => reference_mode_kinds
       )
-      @model.object_types = entity_types + value_types + objectified_types
-      @model.fact_types = fact_types + implied_fact_types
-      @model.constraints = uniqueness_constraints + mandatory_constraints
-      @model.data_types = data_types
-      @model.model_notes = model_notes
-      @model.model_errors = model_errors
-      @model.reference_mode_kinds = reference_mode_kinds
-      @model
     end
     
     private

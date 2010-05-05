@@ -34,4 +34,16 @@ describe ORM::ConceptualDataType do
     end
   end
   
+  describe "#data_type" do
+    it "returns the ORM::DataType with @uuid = @data_type_ref" do
+      data_type_ref = UUID.generate
+      data_types = [ORM::UnspecifiedDataType.new, ORM::FixedLengthTextDataType.new(:uuid => data_type_ref)]
+      conceptual_data_type = ORM::ConceptualDataType.new(
+        :value_type => mock(ORM::ValueType, :model => mock(ORM::Model, :data_types => data_types)),
+        :data_type_ref => data_type_ref
+      )
+      conceptual_data_type.data_type.should == data_types[1]
+    end
+  end
+  
 end

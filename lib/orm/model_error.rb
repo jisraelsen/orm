@@ -1,12 +1,12 @@
 module ORM
   class ModelError
-    attr_reader :model, :uuid
-    attr_accessor :name
+    attr_reader   :uuid
+    attr_accessor :model, :name
     
     def initialize(options={})
-      @model    = options[:model]
-      @uuid     = options[:uuid] || UUID.generate
-      self.name = options[:name]
+      @uuid       = options[:uuid] || UUID.generate
+      self.model  = options[:model]
+      self.name   = options[:name]
     end
   end
   

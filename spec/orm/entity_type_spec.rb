@@ -63,4 +63,18 @@ describe ORM::EntityType do
     end
   end
   
+  describe "#preferred_identifier" do
+    it "returns the ORM::UniquenessConstraint with @uuid = @preferred_identifier_ref" do
+      preferred_identifier_ref = UUID.generate
+      uniqueness_constraints = [
+        ORM::UniquenessConstraint.new, 
+        ORM::UniquenessConstraint.new(:uuid => preferred_identifier_ref)
+      ]
+      entity_type = ORM::EntityType.new(
+        :model => mock(ORM::Model, :uniqueness_constraints => uniqueness_constraints),
+        :preferred_identifier_ref => preferred_identifier_ref
+      )
+      entity_type.preferred_identifier.should == uniqueness_constraints[1]
+    end
+  end
 end

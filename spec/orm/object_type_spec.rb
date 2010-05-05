@@ -53,4 +53,21 @@ describe ORM::ObjectType do
     end
   end
   
+  describe "#played_roles" do
+    it "returns the ORM::Role with @uuid in @played_role_refs" do
+      played_role_refs = [UUID.generate, UUID.generate]
+      fact_types = [
+        ORM::FactType.new(:roles => [ORM::Role.new, ORM::Role.new]),
+        ORM::FactType.new(:roles => [ORM::Role.new(:uuid => played_role_refs[0]), ORM::Role.new(:uuid => played_role_refs[1])]), 
+        ORM::FactType.new(:roles => [ORM::Role.new, ORM::Role.new])
+      ]
+      object_type = ORM::ObjectType.new(
+        :model => mock(ORM::Model, :fact_types => fact_types),
+        :played_role_refs => played_role_refs
+      )
+      object_type.played_roles[0].should == fact_types[1].roles[0]
+      object_type.played_roles[1].should == fact_types[1].roles[1]
+    end
+  end
+  
 end

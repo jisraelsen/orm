@@ -1,12 +1,12 @@
 module ORM
   class ModelNote    
-    attr_reader   :model, :uuid
-    attr_accessor :text
+    attr_reader   :uuid
+    attr_accessor :model, :text
     
     def initialize(options={})
-      @model    = options[:model]
-      @uuid     = options[:uuid] || UUID.generate
-      self.text = options[:text]
+      @uuid       = options[:uuid] || UUID.generate
+      self.model  = options[:model]
+      self.text   = options[:text]
     end
   end
 end

@@ -50,4 +50,36 @@ describe ORM::MandatoryConstraint do
     end
   end
   
+  describe "#implied_by_object_type" do
+    it "returns the ORM::ObjectType with @uuid = @implied_by_object_type_ref" do
+      implied_by_object_type_ref = UUID.generate
+      object_types = [
+        ORM::EntityType.new, 
+        ORM::ValueType.new(:uuid => implied_by_object_type_ref)
+      ]
+      mandatory_constraint = ORM::MandatoryConstraint.new(
+        :model => mock(ORM::Model, :object_types => object_types),
+        :implied_by_object_type_ref => implied_by_object_type_ref
+      )
+      mandatory_constraint.implied_by_object_type.should == object_types[1]
+    end
+  end
+  
+  describe "#roles" do
+    it "returns the ORM::Role with @uuid in @role_refs" do
+      role_refs = [UUID.generate, UUID.generate]
+      fact_types = [
+        ORM::FactType.new(:roles => [ORM::Role.new, ORM::Role.new]),
+        ORM::FactType.new(:roles => [ORM::Role.new(:uuid => role_refs[0]), ORM::Role.new(:uuid => role_refs[1])]), 
+        ORM::FactType.new(:roles => [ORM::Role.new, ORM::Role.new])
+      ]
+      mandatory_constraint = ORM::MandatoryConstraint.new(
+        :model => mock(ORM::Model, :fact_types => fact_types),
+        :role_refs => role_refs
+      )
+      mandatory_constraint.roles[0].should == fact_types[1].roles[0]
+      mandatory_constraint.roles[1].should == fact_types[1].roles[1]
+    end
+  end
+  
 end

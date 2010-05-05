@@ -39,4 +39,22 @@ describe ORM::FactType do
     end
   end
   
+  describe "#internal_constraints" do
+    it "returns the ORM::Constraints with @uuid in @internal_constraint_refs" do
+      internal_constraint_refs = [UUID.generate, UUID.generate]
+      constraints = [
+        ORM::UniquenessConstraint.new, 
+        ORM::UniquenessConstraint.new(:uuid => internal_constraint_refs[0]), 
+        ORM::MandatoryConstraint.new,
+        ORM::MandatoryConstraint.new(:uuid => internal_constraint_refs[1])
+      ]
+      fact_type = ORM::FactType.new(
+        :model => mock(ORM::Model, :constraints => constraints),
+        :internal_constraint_refs => internal_constraint_refs
+      )
+      fact_type.internal_constraints[0].should == constraints[1]
+      fact_type.internal_constraints[1].should == constraints[3]
+    end
+  end
+  
 end

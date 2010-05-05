@@ -42,4 +42,17 @@ describe ORM::Role do
     end
   end
   
+  describe "#role_player" do
+    it "returns the ORM::ObjectType with @uuid = @role_player_ref" do
+      role_player_ref = UUID.generate
+      object_types = [
+        ORM::EntityType.new, ORM::ValueType.new(:uuid => role_player_ref)
+      ]
+      role = ORM::Role.new(
+        :fact_type => mock(ORM::FactType, :model => mock(ORM::Model, :object_types => object_types)),
+        :role_player_ref => role_player_ref
+      )
+      role.role_player.should == object_types[1]
+    end
+  end
 end
