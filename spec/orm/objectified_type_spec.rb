@@ -21,12 +21,35 @@ describe ORM::ObjectifiedType do
       objectified_type.is_independent.should == false
     end
     
+    it "assigns @is_external from hashed arguments" do
+      objectified_type = ORM::ObjectifiedType.new(:is_external => "true")
+      objectified_type.is_external.should == true
+      
+      objectified_type = ORM::ObjectifiedType.new(:is_external => "false")
+      objectified_type.is_external.should == false
+    end
+    
     it "assigns @is_personal from hashed arguments" do
       objectified_type = ORM::ObjectifiedType.new(:is_personal => "true")
       objectified_type.is_personal.should == true
       
       objectified_type = ORM::ObjectifiedType.new(:is_personal => "false")
       objectified_type.is_personal.should == false
+    end
+    
+    it "assigns @played_role_refs from hashed arguments" do
+      objectified_type = ORM::ObjectifiedType.new(:played_role_refs => ["SOMEUUID"])
+      objectified_type.played_role_refs.should == ["SOMEUUID"]
+    end
+    
+    it "assigns @preferred_identifier_ref from hashed arguments" do
+      objectified_type = ORM::ObjectifiedType.new(:preferred_identifier_ref => "SOMEUUID")
+      objectified_type.preferred_identifier_ref.should == "SOMEUUID"
+    end
+    
+    it "assigns @nested_predicate from hashed arguments" do
+      objectified_type = ORM::ObjectifiedType.new(:nested_predicate => ORM::NestedPredicate.new)
+      objectified_type.nested_predicate.should be_kind_of(ORM::NestedPredicate)
     end
     
     context "with no uuid argument provided" do

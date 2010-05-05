@@ -68,6 +68,20 @@ describe ORM::Parser do
       it "parses orm:EntityType[@_ReferenceMode]" do
         @entity_types.map(&:reference_mode).should == ["", "code", "name", "nr", "ymd"]
       end
+      
+      it "parses orm:EntityType//orm:PreferredIdentifier[@ref]" do
+        @entity_types.map(&:preferred_identifier_ref).should == [
+          "A19A1D33-01CE-473B-BA5F-88B67F904EF8", "DE3ABC29-33D5-4AD0-9454-85F752B80D5D", "0F4C3E33-72A8-4AB9-987A-16217951D6BC", 
+          "DD71C742-AB8A-40EB-BC01-C5A97B5DA248", "21B99692-BE07-404D-92A9-3ABCE9C47145"
+        ]
+      end
+      
+      it "parses orm:EntityType//orm:PlayedRoles/orm:Role[@ref]" do
+        @entity_types.first.played_role_refs.should == [
+          "56260498-C99E-4A39-B44D-192D28F84051", "B9677657-C97A-4479-8DDA-D2B83D188F2F", "B1A81F50-1766-45D2-9CF5-6CDA011366A6", 
+          "5502152C-EBA3-4B26-9B11-4A480BC2EDEA", "7062D0E1-C6C5-41F3-BE84-65CFA507E2AA"
+        ]
+      end
     end
     
     describe "#value_types" do
@@ -97,6 +111,35 @@ describe ORM::Parser do
       it "parses orm:ValueType[@IsImplicitBooleanValue]" do
         @value_types.map(&:is_implicit_boolean_value).should == [true, true, false, false, false, false, false, false, false]
       end
+      
+      it "parses orm:ValueType//orm:PlayedRoles/orm:Role[@ref]" do
+        @value_types.first.played_role_refs.should == ["CD47DA93-BE08-4FB8-B4B0-16D55E92494D"]
+      end
+      
+      it "parses orm:ValueType//orm:ConceptualDataType" do
+        conceptual_data_type = @value_types.first.conceptual_data_type
+        
+        conceptual_data_type.uuid.should == "205B7C72-C99A-439C-9FE4-906D5A11A0EF"
+        conceptual_data_type.data_type_ref.should == "E94AC38F-C9E4-4BE5-9A66-F839DFA66DC0"
+        conceptual_data_type.scale.should == 0
+        conceptual_data_type.length.should == 0
+      end
+      
+      it "parses orm:ValueType//orm:ValueRestriction//orm:ValueConstraint" do
+        value_constraint = @value_types.first.value_constraint
+        
+        value_constraint.uuid.should == "A82F40FE-155D-41CB-A17C-C97B1D2DBC1F"
+        value_constraint.name.should == "ValueTypeValueConstraint1"
+        
+        value_ranges = value_constraint.value_ranges
+        value_ranges.map(&:uuid).should == [
+          "BEC226C7-17E9-4077-9909-A8E7888DD855", "ECDDBD80-07D6-4A4F-AE91-DFCB7B90D308", "9F411A23-7E55-42AD-91E0-F2812752F9AF"
+        ]
+        value_ranges.map(&:min_value).should == ["True", "True", "1"]
+        value_ranges.map(&:max_value).should == ["True", "True", "20"]
+        value_ranges.map(&:min_inclusion).should == ["NotSet", "NotSet", "NotSet"]
+        value_ranges.map(&:max_inclusion).should == ["NotSet", "NotSet", "NotSet"]
+      end
     end
     
     describe "#objectified_types" do
@@ -123,6 +166,24 @@ describe ORM::Parser do
       
       it "parses orm:ObjectifiedType[@IsPersonal]" do
         @objectified_types.map(&:is_personal).should == [false]
+      end
+      
+      it "parses orm:ObjectifiedType//orm:PreferredIdentifier[@ref]" do
+        @objectified_types.map(&:preferred_identifier_ref).should == ["2CB354CD-3F09-4A99-8D6A-76A105A38AE0"]
+      end
+      
+      it "parses orm:ObjectifiedType//orm:PlayedRoles/orm:Role[@ref]" do
+        @objectified_types.first.played_role_refs.should == [
+          "2DC4ECAC-D07A-468B-B7D2-0392422D4DB1", "812101F2-AB02-4510-897C-70EF6D7E9F26", "C76A6F28-A630-4C89-8B84-B6B6F21389E4"
+        ]
+      end
+      
+      it "parses orm:ObjectifiedType//orm:NestedPredicate" do
+        nested_predicate = @objectified_types.first.nested_predicate
+        
+        nested_predicate.uuid.should == "115EDD6B-A781-4B59-9269-1E06B86F584E"
+        nested_predicate.fact_type_ref.should == "7C096C2E-A2B2-47D6-BBC2-E7205B8C7717"
+        nested_predicate.is_implied.should == true
       end
     end
     
@@ -152,6 +213,31 @@ describe ORM::Parser do
           "CinemaFirstShowedMovieOnDate"
         ]
       end
+      
+      it "parses orm:Fact//orm:FactRoles/orm:Roles" do
+        roles = @fact_types.first.roles
+        
+        roles.map(&:uuid).should == ["56260498-C99E-4A39-B44D-192D28F84051", "CD47DA93-BE08-4FB8-B4B0-16D55E92494D"]
+        roles.map(&:name).should == ["", ""]
+        roles.map(&:is_mandatory).should == [false, false]
+        roles.map(&:multiplicity).should == ["Unspecified", "Unspecified"]
+        roles.map(&:role_player_ref).should == ["E7E7DC86-1B59-420E-BF1F-DCD569418FAE", "D786B948-E508-49B5-85CC-DCEC104F1691"]
+      end
+      
+      it "parses orm:Fact//orm:ReadingOrders/orm:ReadingOrder" do
+        reading_orders = @fact_types.first.reading_orders
+        
+        reading_orders.map(&:uuid).should == ["B5DF2590-52A7-4B60-93B2-6F1B5C58E4FA"]
+        reading_orders.map(&:role_refs).should == [["56260498-C99E-4A39-B44D-192D28F84051"]]
+        
+        reading = reading_orders.first.reading
+        reading.uuid.should == "0B6C9C5E-C1CC-4E1B-BB31-C36E38D13538"
+        reading.text.should == "{0} is large"
+      end
+      
+      it "parses orm:Fact//orm:InternalConstraints/*" do
+        @fact_types.first.internal_constraint_refs.should == ["D08CEEAC-71BC-4621-9292-84824435E84A"]
+      end
     end
     
     describe "#implied_fact_types" do
@@ -175,6 +261,40 @@ describe ORM::Parser do
           "CinemaIsInvolvedInCinemaFirstShowedMovieOnDate", "MovieIsInvolvedInCinemaFirstShowedMovieOnDate", 
           "DateIsInvolvedInCinemaFirstShowedMovieOnDate"
         ]
+      end
+      
+      it "parses orm:ImpliedFact//orm:FactRoles/orm:Role" do
+        roles = @implied_fact_types.first.roles
+        
+        roles.map(&:uuid).should == ["2DC4ECAC-D07A-468B-B7D2-0392422D4DB1"]
+        roles.map(&:name).should == [""]
+        roles.map(&:is_mandatory).should == [true]
+        roles.map(&:multiplicity).should == ["ZeroToMany"]
+        roles.map(&:role_player_ref).should == ["BD4D134B-7912-4DBE-A2C6-2B03448141C5"]
+      end
+      
+      it "parses orm:ImpliedFact//orm:ReadingOrders/orm:ReadingOrder" do
+        reading_orders = @implied_fact_types.first.reading_orders
+        
+        reading_orders.map(&:uuid).should == ["1047CA32-541F-4B82-A945-3CC0BE5A8C5F", "6DD5D6BA-FC8A-4991-892F-27CA86B7DD0C"]
+        reading_orders.map(&:role_refs).should == [
+          ["7C3B6692-859A-47C0-BF89-E062799471F0", "2DC4ECAC-D07A-468B-B7D2-0392422D4DB1"], 
+          ["2DC4ECAC-D07A-468B-B7D2-0392422D4DB1", "7C3B6692-859A-47C0-BF89-E062799471F0"]
+        ]
+        
+        reading = reading_orders.first.reading
+        reading.uuid.should == "01A1E472-86FE-4394-96D3-240D0BC3E1A7"
+        reading.text.should == "{0} is involved in {1}"
+      end
+      
+      it "parses orm:ImpliedFact//orm:InternalConstraints/*" do
+        @implied_fact_types.first.internal_constraint_refs.should == [
+          "397D4D0B-491A-4D7A-B3BE-E257A8B78843", "457EC797-F182-47BA-A28E-E603B46E39CD"
+        ]
+      end
+      
+      it "parses orm:ImpliedFact//orm:ImpliedByObjectification[@ref]" do
+        @implied_fact_types.first.implied_by_objectification_ref.should == "115EDD6B-A781-4B59-9269-1E06B86F584E"
       end
     end
     
@@ -217,6 +337,14 @@ describe ORM::Parser do
           true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, 
           true, true, true, true, true
         ]
+      end
+      
+      it "parses orm:UniquenessConstraint//orm:RoleSequence/orm:Role[@ref]" do
+        @uniqueness_constraints.first.role_refs.should == ["56260498-C99E-4A39-B44D-192D28F84051"]
+      end
+      
+      it "parses orm:UniquenessConstraint/orm:PreferredIdentifierFor[@ref]" do
+        @uniqueness_constraints[2].preferred_identifier_for.should == "99DF19BF-17FA-4360-90A9-43E2557D7AF1"
       end
     end
     
@@ -267,6 +395,14 @@ describe ORM::Parser do
           true, true, false, false, false, true
         ]
       end
+      
+      it "parses orm:MandatoryConstraint//orm:RoleSequence/orm:Role[@ref]" do
+        @mandatory_constraints.first.role_refs.should == ["CD47DA93-BE08-4FB8-B4B0-16D55E92494D"]
+      end
+      
+      it "parses orm:MandatoryConstraint/orm:ImpliedByObjectType[@ref]" do
+        @mandatory_constraints.first.implied_by_object_type_ref.should == "D786B948-E508-49B5-85CC-DCEC104F1691"
+      end
     end
     
     describe "#data_types" do
@@ -311,18 +447,18 @@ describe ORM::Parser do
         @model_errors = @parser.model_errors
       end
       
-      it "returns an array of ORM::DataTypeNotSpecifiedError objects parsed from orm:DataTypeNotSpecifiedError nodes" do        
+      it "returns an array of ORM::ModelError objects parsed from orm:ModelError/* nodes" do        
         @model_errors.size.should == 3
         @model_errors.each {|o| o.should be_kind_of(ORM::DataTypeNotSpecifiedError) }
       end
       
-      it "parses orm:DataTypeNotSpecifiedError[@id]" do
+      it "parses orm:ModelError/*[@id]" do
         @model_errors.map(&:uuid).should == [
           "1C460C05-FE6B-426D-BD99-37DB6F9B2A85", "77E7EB5B-1AC8-4ED6-9051-410361A56B5E", "3838BFD5-A5B3-49A6-A009-BC0177C21719"
         ]
       end
       
-      it "parses orm:DataTypeNotSpecifiedError[@Name]" do
+      it "parses orm:ModelError/*[@Name]" do
         @model_errors.map(&:name).should == [
           "A data type must be specified for value type 'CityName' in model 'ORMModel1'.", 
           "A data type must be specified for value type 'StateName' in model 'ORMModel1'.", 
@@ -330,9 +466,9 @@ describe ORM::Parser do
         ]
       end
       
-      it "parses orm:DataTypeNotSpecifiedError//orm:ConceptualDataType[@ref]" do
+      it "parses orm:ModelError/orm:DataTypeNotSpecifiedError//orm:ConceptualDataType[@ref]" do
         @model_errors.map(&:conceptual_data_type_ref).should == [
-          "E94AC38F-C9E4-4BE5-9A66-F839DFA66DC0", "E94AC38F-C9E4-4BE5-9A66-F839DFA66DC0", "E94AC38F-C9E4-4BE5-9A66-F839DFA66DC0"
+          "33A7DF07-32F6-4F3B-A482-302EDAE2E2E2", "0F8ECE74-C661-439A-8238-D6E14D0E14F7", "3F64A277-73E8-41B4-9438-9D06308317A4"
         ]
       end
     end

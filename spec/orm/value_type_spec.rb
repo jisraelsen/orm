@@ -21,6 +21,21 @@ describe ORM::ValueType do
       value_type.is_implicit_boolean_value.should == false
     end
     
+    it "assigns @played_role_refs from hashed arguments" do
+      value_type = ORM::ValueType.new(:played_role_refs => ["SOMEUUID"])
+      value_type.played_role_refs.should == ["SOMEUUID"]
+    end
+    
+    it "assigns @conceptual_data_type from hashed arguments" do
+      value_type = ORM::ValueType.new(:conceptual_data_type => ORM::ConceptualDataType.new)
+      value_type.conceptual_data_type.should be_kind_of(ORM::ConceptualDataType)
+    end
+    
+    it "assigns @value_constraint from hashed arguments" do
+      value_type = ORM::ValueType.new(:value_constraint => ORM::ValueConstraint.new)
+      value_type.value_constraint.should be_kind_of(ORM::ValueConstraint)
+    end
+    
     context "with no uuid argument provided" do
       it "generates a new UUID" do
         uuid = UUID.generate

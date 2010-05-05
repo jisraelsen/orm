@@ -13,6 +13,11 @@ describe ORM::MandatoryConstraint do
       mandatory_constraint.name.should == "SimpleMandatoryConstraint1337"
     end
     
+    it "assigns @role_refs from hashed arguments" do
+      mandatory_constraint = ORM::MandatoryConstraint.new(:role_refs => ["SOMEUUID"])
+      mandatory_constraint.role_refs.should == ["SOMEUUID"]
+    end
+    
     it "assigns @is_simple from hashed arguments" do
       mandatory_constraint = ORM::MandatoryConstraint.new(:is_simple => "true")
       mandatory_constraint.is_simple.should == true
@@ -27,6 +32,11 @@ describe ORM::MandatoryConstraint do
       
       mandatory_constraint = ORM::MandatoryConstraint.new(:is_implied => "false")
       mandatory_constraint.is_implied.should == false
+    end
+    
+    it "assigns @implied_by_object_type_ref from hashed arguments" do
+      mandatory_constraint = ORM::MandatoryConstraint.new(:implied_by_object_type_ref => "SOMEUUID")
+      mandatory_constraint.implied_by_object_type_ref.should == "SOMEUUID"
     end
     
     context "with no uuid argument provided" do

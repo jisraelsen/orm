@@ -13,6 +13,35 @@ describe ORM::ObjectType do
       object_type.name.should == "ObjectType1337"
     end
     
+    it "assigns @is_independent from hashed arguments" do
+      object_type = ORM::ObjectType.new(:is_independent => "true")
+      object_type.is_independent.should == true
+      
+      object_type = ORM::ObjectType.new(:is_independent => "false")
+      object_type.is_independent.should == false
+    end
+    
+    it "assigns @is_external from hashed arguments" do
+      object_type = ORM::ObjectType.new(:is_external => "true")
+      object_type.is_external.should == true
+      
+      object_type = ORM::ObjectType.new(:is_external => "false")
+      object_type.is_external.should == false
+    end
+    
+    it "assigns @is_personal from hashed arguments" do
+      object_type = ORM::ObjectType.new(:is_personal => "true")
+      object_type.is_personal.should == true
+      
+      object_type = ORM::ObjectType.new(:is_personal => "false")
+      object_type.is_personal.should == false
+    end
+    
+    it "assigns @played_role_refs from hashed arguments" do
+      object_type = ORM::ObjectType.new(:played_role_refs => ["SOMEUUID"])
+      object_type.played_role_refs.should == ["SOMEUUID"]
+    end
+    
     context "with no uuid argument provided" do
       it "generates a new UUID" do
         uuid = UUID.generate

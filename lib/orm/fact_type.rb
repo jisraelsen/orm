@@ -1,21 +1,14 @@
 module ORM
   class FactType
     attr_reader   :uuid
-    attr_accessor :name
-
-    # TODO: implement the following
-    # <xs:element name="Definitions" type="DefinitionsType" minOccurs="0"/>
-    # <xs:element name="Notes" type="NotesType" minOccurs="0"/>
-    # <xs:element name="FactRoles" type="FactRolesType" minOccurs="0"/>
-    # <xs:element name="ReadingOrders" type="ReadingOrdersType" minOccurs="0"/>
-    # <xs:element name="InternalConstraints" type="InternalConstraintsType" minOccurs="0"/>
-    # <xs:element name="DerivationRule" type="FactTypeDerivationRuleType" minOccurs="0"/>
-    # <xs:element name="Instances" type="FactTypeInstancesType" minOccurs="0"/>
-    # <xs:element name="Extensions" type="ExtensionsType" minOccurs="0"/>
+    attr_accessor :name, :roles, :reading_orders, :internal_constraint_refs
 		
     def initialize(options={})
-      @uuid     = options[:uuid] || UUID.generate
-      self.name = options[:name]
+      @uuid                         = options[:uuid] || UUID.generate
+      self.name                     = options[:name]
+      self.roles                    = options[:roles]
+      self.reading_orders           = options[:reading_orders]
+      self.internal_constraint_refs = options[:internal_constraint_refs]
     end
   end
 end

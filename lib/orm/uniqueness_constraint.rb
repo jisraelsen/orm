@@ -1,14 +1,12 @@
 module ORM
   class UniquenessConstraint < Constraint
-    attr_accessor :is_internal
-    
-    # TODO: implement the following:
-    # <xs:element name="PreferredIdentifierFor" type="ObjectTypeRef" minOccurs="0"/>
-    # <xs:element name="Extensions" type="ExtensionsType" minOccurs="0"/>
+    attr_accessor :role_refs, :is_internal, :preferred_identifier_for
     
     def initialize(options={})
       super
-      self.is_internal  = options[:is_internal] == "true" ? true : false
+      self.role_refs                = options[:role_refs]
+      self.is_internal              = options[:is_internal].to_boolean
+      self.preferred_identifier_for = options[:preferred_identifier_for]
     end
   end
 end

@@ -13,12 +13,22 @@ describe ORM::UniquenessConstraint do
       uniqueness_constraint.name.should == "InternalUniquenessConstraint1337"
     end
     
+    it "assigns @role_refs from hashed arguments" do
+      uniqueness_constraint = ORM::UniquenessConstraint.new(:role_refs => ["SOMEUUID"])
+      uniqueness_constraint.role_refs.should == ["SOMEUUID"]
+    end
+    
     it "assigns @is_internal from hashed arguments" do
       uniqueness_constraint = ORM::UniquenessConstraint.new(:is_internal => "true")
       uniqueness_constraint.is_internal.should == true
       
       uniqueness_constraint = ORM::UniquenessConstraint.new(:is_internal => "false")
       uniqueness_constraint.is_internal.should == false
+    end
+    
+    it "assigns @preferred_identifier_for from hashed arguments" do
+      uniqueness_constraint = ORM::UniquenessConstraint.new(:preferred_identifier_for => "SOMEUUID")
+      uniqueness_constraint.preferred_identifier_for.should == "SOMEUUID"
     end
     
     context "with no uuid argument provided" do

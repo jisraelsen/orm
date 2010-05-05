@@ -4,8 +4,8 @@ module ORM
     attr_accessor :name
 
     def initialize(options={})
-      @uuid     = options[:uuid] || UUID.generate
-      self.name = options[:name]
+      @uuid           = options[:uuid] || UUID.generate
+      self.name       = options[:name]
     end
   end
 end
