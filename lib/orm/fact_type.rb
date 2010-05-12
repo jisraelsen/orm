@@ -25,5 +25,9 @@ module ORM
     def internal_constraints
       model.constraints.select{|o| internal_constraint_refs.include?(o.uuid) } if model
     end
+    
+    def verbalizations
+      reading_orders.map(&:verbalization)
+    end
   end
 end

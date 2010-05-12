@@ -18,13 +18,18 @@ module ORM
     # object types
     def entity_types
       doc.xpath('//orm:Objects/orm:EntityType').map do |node|
-        ORM::EntityType.new(
+        entity_type = ORM::EntityType.new(
           :uuid => parse_uuid(node['id']), 
           :name => node['Name'], 
           :reference_mode => node['_ReferenceMode'],
-          :preferred_identifier_ref => parse_uuid(node.at_xpath('orm:PreferredIdentifier')['ref']),
           :played_role_refs => node.xpath('orm:PlayedRoles/orm:Role').map {|n| parse_uuid(n['ref'])}
         )
+        
+        if preferred_identifier_node = node.at_xpath('orm:PreferredIdentifier')
+          entity_type.preferred_identifier_ref = parse_uuid(preferred_identifier_node['ref'])
+        end
+        
+        entity_type
       end
     end
     
@@ -129,6 +134,12 @@ module ORM
         ORM::ImpliedFactType.new(
           :uuid => parse_uuid(node['id']), 
           :name => node['_Name'],
+          :role_proxies => node.xpath('orm:FactRoles/orm:RoleProxy').map {|n| 
+            ORM::RoleProxy.new(
+              :uuid => parse_uuid(n['id']),
+              :role_ref => parse_uuid(n.at_xpath('orm:Role')['ref'])
+            )
+          },
           :roles => node.xpath('orm:FactRoles/orm:Role').map {|n| 
             ORM::Role.new(
               :uuid => parse_uuid(n['id']),

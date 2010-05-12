@@ -22,6 +22,7 @@ require "orm/nested_predicate"
 require "orm/fact_type"
 require "orm/implied_fact_type"
 require "orm/role"
+require "orm/role_proxy"
 require "orm/reading_order"
 require "orm/reading"
 

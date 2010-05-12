@@ -263,6 +263,13 @@ describe ORM::Parser do
         ]
       end
       
+      it "parses orm:ImpliedFact//orm:FactRoles/orm:RoleProxy" do
+        role_proxies = @implied_fact_types.first.role_proxies
+        
+        role_proxies.map(&:uuid).should == ["7C3B6692-859A-47C0-BF89-E062799471F0"]
+        role_proxies.map(&:role_ref).should == ["7A913FF3-1F1B-470A-83A8-4DA31CFD7BD7"]
+      end
+      
       it "parses orm:ImpliedFact//orm:FactRoles/orm:Role" do
         roles = @implied_fact_types.first.roles
         
@@ -344,7 +351,7 @@ describe ORM::Parser do
       end
       
       it "parses orm:UniquenessConstraint/orm:PreferredIdentifierFor[@ref]" do
-        @uniqueness_constraints[2].preferred_identifier_for.should == "99DF19BF-17FA-4360-90A9-43E2557D7AF1"
+        @uniqueness_constraints[2].preferred_identifier_for_ref.should == "99DF19BF-17FA-4360-90A9-43E2557D7AF1"
       end
     end
     

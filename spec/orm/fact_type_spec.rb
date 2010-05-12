@@ -57,4 +57,15 @@ describe ORM::FactType do
     end
   end
   
+  describe "#verbalizations" do
+    it "returns an array of the fact_type's reading_order verbalizations" do
+      fact_type = ORM::FactType.new
+      fact_type.stub!(:reading_orders).and_return([
+        mock(ORM::ReadingOrder, :verbalization => "Foo has Bar"),
+        mock(ORM::ReadingOrder, :verbalization => "Bar is of Foo")
+      ])
+      
+      fact_type.verbalizations.should == ["Foo has Bar", "Bar is of Foo"]
+    end
+  end
 end

@@ -15,7 +15,7 @@ module ORM
     end
     
     def roles
-      model.fact_types.map(&:roles).flatten.select{|o| role_refs.include?(o.uuid) } if model
+      role_refs.map{|role_ref| model.fact_types.map(&:roles).flatten.detect{|o| o.uuid == role_ref }} if model
     end
   end
 end
