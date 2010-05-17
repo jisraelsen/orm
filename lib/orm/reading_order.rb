@@ -27,9 +27,14 @@ module ORM
       end
     end
     
-    def all_roles
+    def roles_and_proxies
       role_refs.map do |role_ref| 
-        r = (roles+role_proxies).detect{|o| o.uuid == role_ref }
+        (roles+role_proxies).detect{|o| o.uuid == role_ref }
+      end
+    end
+    
+    def all_roles
+      roles_and_proxies.map do |r|
         r.respond_to?(:role) ? r.role : r
       end
     end

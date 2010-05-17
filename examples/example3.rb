@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../init'
 
-model = ORM::Parser.parse(File.open(File.dirname(__FILE__) + "/example3.orm")).model
+model = ORM::XML::Parser.parse(File.open(File.dirname(__FILE__) + "/example3.orm")).model
 
 # puts "Object Types:\n"
 # model.object_types.map{|o| puts o.inspect }
@@ -30,3 +30,7 @@ end
 # puts
 # puts "Reference Mode Kinds:\n"
 # model.reference_mode_kinds.map{|o| puts o.inspect }
+
+puts 
+puts "Serialized ORM Model:\n"
+puts ORM::XML::Serializer.serialize(model).xml

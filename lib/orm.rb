@@ -33,4 +33,5 @@ require "orm/model_error"
 require "orm/reference_mode_kind"
 
 require "orm/model"
-require "orm/parser"
+require "orm/xml/parser"
+require "orm/xml/serializer"

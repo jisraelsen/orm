@@ -1,32 +1,31 @@
-
 require 'spec_helper'
 
-describe ORM::Parser do
+describe ORM::XML::Parser do
   before(:each) do
-    @orm_file = File.open(File.dirname(__FILE__) + "/../fixtures/models/cities_and_cinemas.orm")
+    @orm_file = File.open(File.dirname(__FILE__) + "/../../fixtures/models/cities_and_cinemas.orm")
   end
   
   describe "#initialize" do
     it "reads provided file with Nokogiri and assigns to @doc" do
-      parser = ORM::Parser.new(@orm_file)
+      parser = ORM::XML::Parser.new(@orm_file)
       parser.doc.should be_kind_of(Nokogiri::XML::Document)
     end
   end
   
   describe ".parse" do
-    it "instantiates a new ORM::Parser and calls #parse" do
-      parser = ORM::Parser.new(@orm_file)
+    it "instantiates a new ORM::XML::Parser and calls #parse" do
+      parser = ORM::XML::Parser.new(@orm_file)
       
-      ORM::Parser.should_receive(:new).and_return(parser)
+      ORM::XML::Parser.should_receive(:new).and_return(parser)
       parser.should_receive(:parse)
       
-      ORM::Parser.parse(@orm_file)
+      ORM::XML::Parser.parse(@orm_file)
     end
   end
   
   describe "#parse" do
     it "assigns the return value of orm_model to @model" do
-      parser = ORM::Parser.new(@orm_file)
+      parser = ORM::XML::Parser.new(@orm_file)
       orm_model = mock(ORM::Model)
       
       parser.should_receive(:orm_model).and_return(orm_model)
@@ -34,14 +33,14 @@ describe ORM::Parser do
     end
     
     it "returns self" do
-      parser = ORM::Parser.new(@orm_file)
+      parser = ORM::XML::Parser.new(@orm_file)
       parser.parse.should == parser
     end
   end
   
   context "while parsing the ORM document" do
     before(:each) do
-      @parser = ORM::Parser.new(@orm_file)
+      @parser = ORM::XML::Parser.new(@orm_file)
     end
     
     describe "#entity_types" do
