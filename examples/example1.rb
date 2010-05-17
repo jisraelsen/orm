@@ -8,8 +8,7 @@ model = ORM::Parser.parse(File.open(File.dirname(__FILE__) + "/example1.orm")).m
 puts
 puts "Fact Types:\n"
 model.fact_types.each do |o| 
-  puts o.name
-  puts "\t#{o.verbalizations.join("\n\t")}"
+  puts o.verbalizations.first
 end
 # 
 # puts
