@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'trollop'
+
+opts = Trollop.options do
+  opt :file, "ORM filename", :type => :string, :required => true
+end
+
+Trollop::die :file, "must exist" unless File.exist?(opts[:file]) if opts[:file]
+
+require File.join(File.dirname(__FILE__), "..", "init")
+
+model = ORM::XML::Parser.parse(File.open(opts[:file])).model
+
+puts
+puts "Object Types:\n"
+model.object_types.each{|o| puts "\t#{o.name}" }
+
+puts
+puts "Fact Types:\n"
+model.fact_types.each do |o| 
+  o.verbalizations.each { |v| puts "\t#{v}" }
+end
+
+puts
