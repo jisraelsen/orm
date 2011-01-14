@@ -1,22 +1,9 @@
 require 'rubygems'
-require 'rake'
+require 'bundler'
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "orm"
-    gem.summary = %Q{Library for parsing/creating ORM files using the NORMA XML schema.}
-    gem.description = %Q{Library for parsing/creating ORM files using the NORMA XML schema.}
-    gem.email = "jisraelsen@gmail.com"
-    gem.homepage = ""
-    gem.authors = ["Jeremy Israelsen"]
-    gem.add_development_dependency "rspec", ">= 1.3.0"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
-  end
-  Jeweler::GemcutterTasks.new
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
-end
+Bundler.setup
+
+require 'rake'
 
 require 'spec/rake/spectask'
 Spec::Rake::SpecTask.new(:spec) do |spec|
@@ -32,8 +19,6 @@ Spec::Rake::SpecTask.new(:rcov) do |spec|
     IO.readlines("spec/rcov.opts").map {|l| l.chomp.split " "}.flatten
   end
 end
-
-task :spec => :check_dependencies
 
 task :default => :spec
 
