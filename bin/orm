@@ -1,17 +1,21 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
-require 'trollop'
 
-opts = Trollop.options do
-  opt :file, "ORM filename", :type => :string, :required => true
+filename = ARGV[0]
+
+errors = []
+errors << "Filename required" unless filename
+errors << "File must exist" unless File.exist?(filename)
+
+unless errors.empty?
+  puts errors.join("\n")
+  exit
 end
-
-Trollop::die :file, "must exist" unless File.exist?(opts[:file]) if opts[:file]
 
 require File.join(File.dirname(__FILE__), "..", "init")
 
-model = ORM::XML::Parser.parse(File.open(opts[:file])).model
+model = ORM::XML::Parser.parse(File.open(filename)).model
 
 puts
 puts "Object Types:\n"
