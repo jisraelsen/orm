@@ -1,0 +1,16 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    activesupport (2.3.5)
+    macaddr (1.0.0)
+    nokogiri (1.4.4)
+    uuid (2.3.1)
+      macaddr (~> 1.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  activesupport (= 2.3.5)
+  nokogiri
+  uuid
